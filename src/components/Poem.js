@@ -1,14 +1,37 @@
-import React from "react";
+import React, { useState } from 'react';
 
-function Poem() {
+const poemAPI = "http://localhost:8004/poems";
+
+function Poem({poem, removePoem, addToFavorites}) {
+  const {title, content, author} = poem;
+  const [isRead, setIsRead] = useState(false)
+
+  function onDeleteClick(e) {
+    e.preventDefault();
+    fetch(`${poemAPI}/${poem.id}`, {
+      method: "DELETE",
+    });
+    removePoem(poem);
+  }
+
   return (
     <div>
-      <h3>Title</h3>
-      <p>Content</p>
+      <h3>{title}</h3>
+      <p>{content}</p>
       <p>
-        <strong>- By Author</strong>
+        <strong>- By {author}</strong>
       </p>
-      <button>Mark as read</button>
+      <button onClick={() => setIsRead(!isRead)} >
+        Mark as {isRead ? "unread" : "read" }
+      </button>
+
+      <button onClick={onDeleteClick} >
+        Delete
+      </button>
+
+      <button onClick={() => addToFavorites(poem)}>
+        {poem.isFavorite ? "Unfavorite" : "♥ Favorite" }
+      </button>
     </div>
   );
 }
